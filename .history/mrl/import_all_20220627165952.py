@@ -37,7 +37,7 @@ from mrl.algorithms.random_ensemble_DPG import RandomEnsembleDPG
 
 # Private imports if available
 try:
-    from private import *
+  from private import *
 except:
-    print(colorize("Warning: Failed to import private modules.", color='red', bold=True))
-    pass
+  print(colorize("Warning: Failed to import private modules.", color='red', bold=True))
+  pass
