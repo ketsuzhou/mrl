@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from gym.utils import seeding
 
+
 class CircleMaze:
     def __init__(self):
         self.ring_r = 0.15
@@ -27,7 +28,8 @@ class CircleMaze:
             _, ax = plt.subplots(1, 1, figsize=(5, 4))
         if ax is None:
             _, ax = plt.subplots(1, 1, figsize=(5, 4))
-        rads = np.linspace(self.stop_t * 2 * np.pi, (1 - self.stop_t) * 2 * np.pi)
+        rads = np.linspace(self.stop_t * 2 * np.pi,
+                           (1 - self.stop_t) * 2 * np.pi)
         xs_i = (1 - self.ring_r) * np.cos(rads)
         ys_i = (1 - self.ring_r) * np.sin(rads)
         xs_o = (1 + self.ring_r) * np.cos(rads)
@@ -63,7 +65,8 @@ class CircleMaze:
         xy = (coords[0] + action[0], coords[1] + action[1])
 
         r, t = self.xy_to_rt(xy)
-        t = np.clip(t % (2 * np.pi), (0.001 + self.stop_t) * (2 * np.pi), (1 - (0.001 + self.stop_t)) * (2 * np.pi))
+        t = np.clip(t % (2 * np.pi), (0.001 + self.stop_t) *
+                    (2 * np.pi), (1 - (0.001 + self.stop_t)) * (2 * np.pi))
         x = np.cos(t) * r
         y = np.sin(t) * r
 
@@ -97,7 +100,8 @@ class CircleMaze:
             count += 1
 
         r = np.clip(new_r, 1 - self.ring_r + 0.01, 1 + self.ring_r - 0.01)
-        t = np.clip(new_t % (2 * np.pi), (0.001 + self.stop_t) * (2 * np.pi), (1 - (0.001 + self.stop_t)) * (2 * np.pi))
+        t = np.clip(new_t % (2 * np.pi), (0.001 + self.stop_t) *
+                    (2 * np.pi), (1 - (0.001 + self.stop_t)) * (2 * np.pi))
         x = np.cos(t) * r
         y = np.sin(t) * r
 
@@ -111,7 +115,8 @@ class Maze:
         self._locs.add(self._segments['origin']['loc'])
         self._walls = set()
         for direction in ['up', 'down', 'left', 'right']:
-            self._walls.add(self._wall_line(self._segments['origin']['loc'], direction))
+            self._walls.add(self._wall_line(
+                self._segments['origin']['loc'], direction))
         self._last_segment = 'origin'
         self.goal_squares = None
 
@@ -166,7 +171,8 @@ class Maze:
             last_name = str(anchor).lower()
             for time in range(times):
                 this_name = original_name + str(time)
-                self._add_segment(name=this_name.lower(), anchor=last_name, direction=direction)
+                self._add_segment(name=this_name.lower(),
+                                  anchor=last_name, direction=direction)
                 last_name = str(this_name)
             return
 
@@ -239,13 +245,15 @@ class Maze:
     def sample_start(self):
         min_wall_dist = 0.05
 
-        s_square = self.start_squares[self.np_random.randint(low=0, high=len(self.start_squares))]
+        s_square = self.start_squares[self.np_random.randint(
+            low=0, high=len(self.start_squares))]
         s_square_loc = self._segments[s_square]['loc']
 
         while True:
             shift = self.np_random.uniform(low=-0.5, high=0.5, size=(2,))
             loc = s_square_loc + shift
-            dist_checker = np.array([min_wall_dist, min_wall_dist]) * np.sign(shift)
+            dist_checker = np.array(
+                [min_wall_dist, min_wall_dist]) * np.sign(shift)
             stopped_loc = self.move(loc, dist_checker)
             if float(np.sum(np.abs((loc + dist_checker) - stopped_loc))) == 0.0:
                 break
@@ -257,12 +265,14 @@ class Maze:
         else:
             min_wall_dist = min(0.4, max(0.01, min_wall_dist))
 
-        g_square = self.goal_squares[self.np_random.randint(low=0, high=len(self.goal_squares))]
+        g_square = self.goal_squares[self.np_random.randint(
+            low=0, high=len(self.goal_squares))]
         g_square_loc = self._segments[g_square]['loc']
         while True:
             shift = self.np_random.uniform(low=-0.5, high=0.5, size=(2,))
             loc = g_square_loc + shift
-            dist_checker = np.array([min_wall_dist, min_wall_dist]) * np.sign(shift)
+            dist_checker = np.array(
+                [min_wall_dist, min_wall_dist]) * np.sign(shift)
             stopped_loc = self.move(loc, dist_checker)
             if float(np.sum(np.abs((loc + dist_checker) - stopped_loc))) == 0.0:
                 break
@@ -280,8 +290,10 @@ class Maze:
         loc_y1 = np.round(cy + dy)
         d_loc_x = int(np.abs(loc_x1 - loc_x0))
         d_loc_y = int(np.abs(loc_y1 - loc_y0))
-        xs_crossed = [loc_x0 + (np.sign(dx) * (i + 0.5)) for i in range(d_loc_x)]
-        ys_crossed = [loc_y0 + (np.sign(dy) * (i + 0.5)) for i in range(d_loc_y)]
+        xs_crossed = [loc_x0 + (np.sign(dx) * (i + 0.5))
+                      for i in range(d_loc_x)]
+        ys_crossed = [loc_y0 + (np.sign(dy) * (i + 0.5))
+                      for i in range(d_loc_y)]
 
         rds = []
 
@@ -387,16 +399,19 @@ def make_experiment_maze(h, half_w, sz0):
     # Create the starting row
     segments = [{'anchor': 'origin', 'direction': 'right', 'name': '0,1'}]
     for w_ in range(1, w-1):
-        segments.append({'anchor': '0,{}'.format(w_), 'direction': 'right', 'name': '0,{}'.format(w_+1)})
+        segments.append({'anchor': '0,{}'.format(
+            w_), 'direction': 'right', 'name': '0,{}'.format(w_+1)})
 
     # Add each row to create H
     for h_ in range(1, h):
-        segments.append({'anchor': '{},{}'.format(h_-1, w-1), 'direction': 'up', 'name': '{},{}'.format(h_, w-1)})
+        segments.append({'anchor': '{},{}'.format(h_-1, w-1),
+                        'direction': 'up', 'name': '{},{}'.format(h_, w-1)})
 
         c = None if h_ == sz0 else 'down'
         for w_ in range(w-2, -1, -1):
             segments.append(
-                {'anchor': '{},{}'.format(h_, w_+1), 'direction': 'left', 'connect': c, 'name': '{},{}'.format(h_, w_)}
+                {'anchor': '{},{}'.format(
+                    h_, w_+1), 'direction': 'left', 'connect': c, 'name': '{},{}'.format(h_, w_)}
             )
 
     return Maze(*segments, goal_squares=['{},{}'.format(h-1, half_w+d) for d in [0]])
@@ -410,7 +425,8 @@ def make_hallway_maze(corridor_length):
     last = 'origin'
     for x in range(1, corridor_length+1):
         next_name = '0,{}'.format(x)
-        segments.append({'anchor': last, 'direction': 'right', 'name': next_name})
+        segments.append(
+            {'anchor': last, 'direction': 'right', 'name': next_name})
         last = str(next_name)
 
     return Maze(*segments, goal_squares=last)
@@ -424,7 +440,8 @@ def make_u_maze(corridor_length):
     last = 'origin'
     for x in range(1, corridor_length + 1):
         next_name = '0,{}'.format(x)
-        segments.append({'anchor': last, 'direction': 'right', 'name': next_name})
+        segments.append(
+            {'anchor': last, 'direction': 'right', 'name': next_name})
         last = str(next_name)
 
     assert last == '0,{}'.format(corridor_length)
@@ -440,13 +457,13 @@ def make_u_maze(corridor_length):
 
     for x in range(1, corridor_length + 1):
         next_name = '{},{}'.format(up_size, corridor_length - x)
-        segments.append({'anchor': last, 'direction': 'left', 'name': next_name})
+        segments.append(
+            {'anchor': last, 'direction': 'left', 'name': next_name})
         last = str(next_name)
 
     assert last == '{},0'.format(up_size)
 
     return Maze(*segments, goal_squares=last)
-
 
 
 mazes_dict = dict()
@@ -460,7 +477,8 @@ segments_a = [
     dict(name='D', anchor='A1', direction='right', times=2),
     dict(name='E', anchor='D1', direction='up', times=2),
 ]
-mazes_dict['square_a'] = {'maze': Maze(*segments_a, goal_squares=['c2', 'c3']), 'action_range': 0.95}
+mazes_dict['square_a'] = {'maze': Maze(
+    *segments_a, goal_squares=['c2', 'c3']), 'action_range': 0.95}
 
 segments_b = [
     dict(name='A', anchor='origin', direction='down', times=4),
@@ -468,7 +486,8 @@ segments_b = [
     dict(name='C', anchor='B3', direction='up', times=4),
     dict(name='D', anchor='B1', direction='up', times=4),
 ]
-mazes_dict['square_b'] = {'maze': Maze(*segments_b, goal_squares=['c2', 'c3']), 'action_range': 0.95}
+mazes_dict['square_b'] = {'maze': Maze(
+    *segments_b, goal_squares=['c2', 'c3']), 'action_range': 0.95}
 
 segments_c = [
     dict(name='A', anchor='origin', direction='down', times=4),
@@ -477,7 +496,8 @@ segments_c = [
     dict(name='D', anchor='C3', direction='right', times=2),
     dict(name='E', anchor='D1', direction='down', times=4)
 ]
-mazes_dict['square_c'] = {'maze': Maze(*segments_c, goal_squares=['e2', 'e3']), 'action_range': 0.95}
+mazes_dict['square_c'] = {'maze': Maze(
+    *segments_c, goal_squares=['e2', 'e3']), 'action_range': 0.95}
 
 segments_d = [
     dict(name='TL', anchor='origin', direction='left', times=3),
@@ -490,107 +510,109 @@ segments_d = [
     dict(name='TRU', anchor='TRL1', direction='up'),
     dict(name='TD', anchor='origin', direction='down', times=3),
 ]
-mazes_dict['square_d'] = {'maze': Maze(*segments_d, goal_squares=['tlu', 'tlr1', 'tru', 'trl1']), 'action_range': 0.95}
+mazes_dict['square_d'] = {'maze': Maze(
+    *segments_d, goal_squares=['tlu', 'tlr1', 'tru', 'trl1']), 'action_range': 0.95}
 
 segments_crazy = [
     {'anchor': 'origin', 'direction': 'right', 'name': '1,0'},
-     {'anchor': 'origin', 'direction': 'up', 'name': '0,1'},
-     {'anchor': '1,0', 'direction': 'right', 'name': '2,0'},
-     {'anchor': '0,1', 'direction': 'up', 'name': '0,2'},
-     {'anchor': '0,2', 'direction': 'right', 'name': '1,2'},
-     {'anchor': '2,0', 'direction': 'up', 'name': '2,1'},
-     {'anchor': '1,2', 'direction': 'right', 'name': '2,2'},
-     {'anchor': '0,2', 'direction': 'up', 'name': '0,3'},
-     {'anchor': '2,1', 'direction': 'right', 'name': '3,1'},
-     {'anchor': '1,2', 'direction': 'down', 'name': '1,1'},
-     {'anchor': '3,1', 'direction': 'down', 'name': '3,0'},
-     {'anchor': '1,2', 'direction': 'up', 'name': '1,3'},
-     {'anchor': '3,1', 'direction': 'right', 'name': '4,1'},
-     {'anchor': '1,3', 'direction': 'up', 'name': '1,4'},
-     {'anchor': '4,1', 'direction': 'right', 'name': '5,1'},
-     {'anchor': '4,1', 'direction': 'up', 'name': '4,2'},
-     {'anchor': '5,1', 'direction': 'down', 'name': '5,0'},
-     {'anchor': '3,0', 'direction': 'right', 'name': '4,0'},
-     {'anchor': '1,4', 'direction': 'right', 'name': '2,4'},
-     {'anchor': '4,2', 'direction': 'right', 'name': '5,2'},
-     {'anchor': '2,4', 'direction': 'right', 'name': '3,4'},
-     {'anchor': '3,4', 'direction': 'up', 'name': '3,5'},
-     {'anchor': '1,4', 'direction': 'left', 'name': '0,4'},
-     {'anchor': '1,4', 'direction': 'up', 'name': '1,5'},
-     {'anchor': '2,2', 'direction': 'up', 'name': '2,3'},
-     {'anchor': '3,1', 'direction': 'up', 'name': '3,2'},
-     {'anchor': '5,0', 'direction': 'right', 'name': '6,0'},
-     {'anchor': '3,2', 'direction': 'up', 'name': '3,3'},
-     {'anchor': '4,2', 'direction': 'up', 'name': '4,3'},
-     {'anchor': '6,0', 'direction': 'up', 'name': '6,1'},
-     {'anchor': '6,0', 'direction': 'right', 'name': '7,0'},
-     {'anchor': '6,1', 'direction': 'right', 'name': '7,1'},
-     {'anchor': '3,4', 'direction': 'right', 'name': '4,4'},
-     {'anchor': '1,5', 'direction': 'right', 'name': '2,5'},
-     {'anchor': '7,1', 'direction': 'up', 'name': '7,2'},
-     {'anchor': '1,5', 'direction': 'up', 'name': '1,6'},
-     {'anchor': '4,4', 'direction': 'right', 'name': '5,4'},
-     {'anchor': '5,4', 'direction': 'down', 'name': '5,3'},
-     {'anchor': '0,4', 'direction': 'up', 'name': '0,5'},
-     {'anchor': '7,2', 'direction': 'left', 'name': '6,2'},
-     {'anchor': '1,6', 'direction': 'left', 'name': '0,6'},
-     {'anchor': '7,0', 'direction': 'right', 'name': '8,0'},
-     {'anchor': '7,2', 'direction': 'right', 'name': '8,2'},
-     {'anchor': '2,5', 'direction': 'up', 'name': '2,6'},
-     {'anchor': '8,0', 'direction': 'up', 'name': '8,1'},
-     {'anchor': '3,5', 'direction': 'up', 'name': '3,6'},
-     {'anchor': '6,2', 'direction': 'up', 'name': '6,3'},
-     {'anchor': '6,3', 'direction': 'right', 'name': '7,3'},
-     {'anchor': '3,5', 'direction': 'right', 'name': '4,5'},
-     {'anchor': '7,3', 'direction': 'up', 'name': '7,4'},
-     {'anchor': '6,3', 'direction': 'up', 'name': '6,4'},
-     {'anchor': '6,4', 'direction': 'up', 'name': '6,5'},
-     {'anchor': '8,1', 'direction': 'right', 'name': '9,1'},
-     {'anchor': '8,2', 'direction': 'right', 'name': '9,2'},
-     {'anchor': '2,6', 'direction': 'up', 'name': '2,7'},
-     {'anchor': '8,2', 'direction': 'up', 'name': '8,3'},
-     {'anchor': '6,5', 'direction': 'left', 'name': '5,5'},
-     {'anchor': '5,5', 'direction': 'up', 'name': '5,6'},
-     {'anchor': '7,4', 'direction': 'right', 'name': '8,4'},
-     {'anchor': '8,4', 'direction': 'right', 'name': '9,4'},
-     {'anchor': '0,6', 'direction': 'up', 'name': '0,7'},
-     {'anchor': '2,7', 'direction': 'up', 'name': '2,8'},
-     {'anchor': '7,4', 'direction': 'up', 'name': '7,5'},
-     {'anchor': '9,4', 'direction': 'down', 'name': '9,3'},
-     {'anchor': '9,4', 'direction': 'up', 'name': '9,5'},
-     {'anchor': '2,7', 'direction': 'left', 'name': '1,7'},
-     {'anchor': '4,5', 'direction': 'up', 'name': '4,6'},
-     {'anchor': '9,1', 'direction': 'down', 'name': '9,0'},
-     {'anchor': '6,5', 'direction': 'up', 'name': '6,6'},
-     {'anchor': '3,6', 'direction': 'up', 'name': '3,7'},
-     {'anchor': '1,7', 'direction': 'up', 'name': '1,8'},
-     {'anchor': '3,7', 'direction': 'right', 'name': '4,7'},
-     {'anchor': '2,8', 'direction': 'up', 'name': '2,9'},
-     {'anchor': '2,9', 'direction': 'left', 'name': '1,9'},
-     {'anchor': '7,5', 'direction': 'up', 'name': '7,6'},
-     {'anchor': '1,8', 'direction': 'left', 'name': '0,8'},
-     {'anchor': '6,6', 'direction': 'up', 'name': '6,7'},
-     {'anchor': '0,8', 'direction': 'up', 'name': '0,9'},
-     {'anchor': '7,5', 'direction': 'right', 'name': '8,5'},
-     {'anchor': '6,7', 'direction': 'left', 'name': '5,7'},
-     {'anchor': '2,9', 'direction': 'right', 'name': '3,9'},
-     {'anchor': '3,9', 'direction': 'right', 'name': '4,9'},
-     {'anchor': '7,6', 'direction': 'right', 'name': '8,6'},
-     {'anchor': '3,7', 'direction': 'up', 'name': '3,8'},
-     {'anchor': '9,5', 'direction': 'up', 'name': '9,6'},
-     {'anchor': '7,6', 'direction': 'up', 'name': '7,7'},
-     {'anchor': '5,7', 'direction': 'up', 'name': '5,8'},
-     {'anchor': '3,8', 'direction': 'right', 'name': '4,8'},
-     {'anchor': '8,6', 'direction': 'up', 'name': '8,7'},
-     {'anchor': '5,8', 'direction': 'right', 'name': '6,8'},
-     {'anchor': '7,7', 'direction': 'up', 'name': '7,8'},
-     {'anchor': '4,9', 'direction': 'right', 'name': '5,9'},
-     {'anchor': '8,7', 'direction': 'right', 'name': '9,7'},
-     {'anchor': '7,8', 'direction': 'right', 'name': '8,8'},
-     {'anchor': '8,8', 'direction': 'up', 'name': '8,9'},
-     {'anchor': '5,9', 'direction': 'right', 'name': '6,9'},
-     {'anchor': '6,9', 'direction': 'right', 'name': '7,9'},
-     {'anchor': '8,9', 'direction': 'right', 'name': '9,9'},
-     {'anchor': '9,9', 'direction': 'down', 'name': '9,8'}
+    {'anchor': 'origin', 'direction': 'up', 'name': '0,1'},
+    {'anchor': '1,0', 'direction': 'right', 'name': '2,0'},
+    {'anchor': '0,1', 'direction': 'up', 'name': '0,2'},
+    {'anchor': '0,2', 'direction': 'right', 'name': '1,2'},
+    {'anchor': '2,0', 'direction': 'up', 'name': '2,1'},
+    {'anchor': '1,2', 'direction': 'right', 'name': '2,2'},
+    {'anchor': '0,2', 'direction': 'up', 'name': '0,3'},
+    {'anchor': '2,1', 'direction': 'right', 'name': '3,1'},
+    {'anchor': '1,2', 'direction': 'down', 'name': '1,1'},
+    {'anchor': '3,1', 'direction': 'down', 'name': '3,0'},
+    {'anchor': '1,2', 'direction': 'up', 'name': '1,3'},
+    {'anchor': '3,1', 'direction': 'right', 'name': '4,1'},
+    {'anchor': '1,3', 'direction': 'up', 'name': '1,4'},
+    {'anchor': '4,1', 'direction': 'right', 'name': '5,1'},
+    {'anchor': '4,1', 'direction': 'up', 'name': '4,2'},
+    {'anchor': '5,1', 'direction': 'down', 'name': '5,0'},
+    {'anchor': '3,0', 'direction': 'right', 'name': '4,0'},
+    {'anchor': '1,4', 'direction': 'right', 'name': '2,4'},
+    {'anchor': '4,2', 'direction': 'right', 'name': '5,2'},
+    {'anchor': '2,4', 'direction': 'right', 'name': '3,4'},
+    {'anchor': '3,4', 'direction': 'up', 'name': '3,5'},
+    {'anchor': '1,4', 'direction': 'left', 'name': '0,4'},
+    {'anchor': '1,4', 'direction': 'up', 'name': '1,5'},
+    {'anchor': '2,2', 'direction': 'up', 'name': '2,3'},
+    {'anchor': '3,1', 'direction': 'up', 'name': '3,2'},
+    {'anchor': '5,0', 'direction': 'right', 'name': '6,0'},
+    {'anchor': '3,2', 'direction': 'up', 'name': '3,3'},
+    {'anchor': '4,2', 'direction': 'up', 'name': '4,3'},
+    {'anchor': '6,0', 'direction': 'up', 'name': '6,1'},
+    {'anchor': '6,0', 'direction': 'right', 'name': '7,0'},
+    {'anchor': '6,1', 'direction': 'right', 'name': '7,1'},
+    {'anchor': '3,4', 'direction': 'right', 'name': '4,4'},
+    {'anchor': '1,5', 'direction': 'right', 'name': '2,5'},
+    {'anchor': '7,1', 'direction': 'up', 'name': '7,2'},
+    {'anchor': '1,5', 'direction': 'up', 'name': '1,6'},
+    {'anchor': '4,4', 'direction': 'right', 'name': '5,4'},
+    {'anchor': '5,4', 'direction': 'down', 'name': '5,3'},
+    {'anchor': '0,4', 'direction': 'up', 'name': '0,5'},
+    {'anchor': '7,2', 'direction': 'left', 'name': '6,2'},
+    {'anchor': '1,6', 'direction': 'left', 'name': '0,6'},
+    {'anchor': '7,0', 'direction': 'right', 'name': '8,0'},
+    {'anchor': '7,2', 'direction': 'right', 'name': '8,2'},
+    {'anchor': '2,5', 'direction': 'up', 'name': '2,6'},
+    {'anchor': '8,0', 'direction': 'up', 'name': '8,1'},
+    {'anchor': '3,5', 'direction': 'up', 'name': '3,6'},
+    {'anchor': '6,2', 'direction': 'up', 'name': '6,3'},
+    {'anchor': '6,3', 'direction': 'right', 'name': '7,3'},
+    {'anchor': '3,5', 'direction': 'right', 'name': '4,5'},
+    {'anchor': '7,3', 'direction': 'up', 'name': '7,4'},
+    {'anchor': '6,3', 'direction': 'up', 'name': '6,4'},
+    {'anchor': '6,4', 'direction': 'up', 'name': '6,5'},
+    {'anchor': '8,1', 'direction': 'right', 'name': '9,1'},
+    {'anchor': '8,2', 'direction': 'right', 'name': '9,2'},
+    {'anchor': '2,6', 'direction': 'up', 'name': '2,7'},
+    {'anchor': '8,2', 'direction': 'up', 'name': '8,3'},
+    {'anchor': '6,5', 'direction': 'left', 'name': '5,5'},
+    {'anchor': '5,5', 'direction': 'up', 'name': '5,6'},
+    {'anchor': '7,4', 'direction': 'right', 'name': '8,4'},
+    {'anchor': '8,4', 'direction': 'right', 'name': '9,4'},
+    {'anchor': '0,6', 'direction': 'up', 'name': '0,7'},
+    {'anchor': '2,7', 'direction': 'up', 'name': '2,8'},
+    {'anchor': '7,4', 'direction': 'up', 'name': '7,5'},
+    {'anchor': '9,4', 'direction': 'down', 'name': '9,3'},
+    {'anchor': '9,4', 'direction': 'up', 'name': '9,5'},
+    {'anchor': '2,7', 'direction': 'left', 'name': '1,7'},
+    {'anchor': '4,5', 'direction': 'up', 'name': '4,6'},
+    {'anchor': '9,1', 'direction': 'down', 'name': '9,0'},
+    {'anchor': '6,5', 'direction': 'up', 'name': '6,6'},
+    {'anchor': '3,6', 'direction': 'up', 'name': '3,7'},
+    {'anchor': '1,7', 'direction': 'up', 'name': '1,8'},
+    {'anchor': '3,7', 'direction': 'right', 'name': '4,7'},
+    {'anchor': '2,8', 'direction': 'up', 'name': '2,9'},
+    {'anchor': '2,9', 'direction': 'left', 'name': '1,9'},
+    {'anchor': '7,5', 'direction': 'up', 'name': '7,6'},
+    {'anchor': '1,8', 'direction': 'left', 'name': '0,8'},
+    {'anchor': '6,6', 'direction': 'up', 'name': '6,7'},
+    {'anchor': '0,8', 'direction': 'up', 'name': '0,9'},
+    {'anchor': '7,5', 'direction': 'right', 'name': '8,5'},
+    {'anchor': '6,7', 'direction': 'left', 'name': '5,7'},
+    {'anchor': '2,9', 'direction': 'right', 'name': '3,9'},
+    {'anchor': '3,9', 'direction': 'right', 'name': '4,9'},
+    {'anchor': '7,6', 'direction': 'right', 'name': '8,6'},
+    {'anchor': '3,7', 'direction': 'up', 'name': '3,8'},
+    {'anchor': '9,5', 'direction': 'up', 'name': '9,6'},
+    {'anchor': '7,6', 'direction': 'up', 'name': '7,7'},
+    {'anchor': '5,7', 'direction': 'up', 'name': '5,8'},
+    {'anchor': '3,8', 'direction': 'right', 'name': '4,8'},
+    {'anchor': '8,6', 'direction': 'up', 'name': '8,7'},
+    {'anchor': '5,8', 'direction': 'right', 'name': '6,8'},
+    {'anchor': '7,7', 'direction': 'up', 'name': '7,8'},
+    {'anchor': '4,9', 'direction': 'right', 'name': '5,9'},
+    {'anchor': '8,7', 'direction': 'right', 'name': '9,7'},
+    {'anchor': '7,8', 'direction': 'right', 'name': '8,8'},
+    {'anchor': '8,8', 'direction': 'up', 'name': '8,9'},
+    {'anchor': '5,9', 'direction': 'right', 'name': '6,9'},
+    {'anchor': '6,9', 'direction': 'right', 'name': '7,9'},
+    {'anchor': '8,9', 'direction': 'right', 'name': '9,9'},
+    {'anchor': '9,9', 'direction': 'down', 'name': '9,8'}
 ]
-mazes_dict['square_large'] = {'maze': Maze(*segments_crazy, goal_squares='9,9'), 'action_range': 0.95}
+mazes_dict['square_large'] = {'maze': Maze(
+    *segments_crazy, goal_squares='9,9'), 'action_range': 0.95}

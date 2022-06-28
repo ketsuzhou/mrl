@@ -8,6 +8,7 @@ import gym
 from gym import error, spaces
 from gym.utils import seeding
 
+
 class GoalGridWorldEnv(gym.GoalEnv):
     """
     A simple 2D grid world environment with goal-oriented reward.
@@ -29,9 +30,10 @@ class GoalGridWorldEnv(gym.GoalEnv):
         wall = 2
         lava = 3
 
-    MOVE_DIRECTION = [[0,-1],[1,0],[0,1],[-1,0]] # up, right, down, left
+    MOVE_DIRECTION = [[0, -1], [1, 0], [0, 1],
+                      [-1, 0]]  # up, right, down, left
 
-    def __init__(self, grid_size=16, max_step=100, grid_file=None, random_init_loc=True, \
+    def __init__(self, grid_size=16, max_step=100, grid_file=None, random_init_loc=True,
                  agent_loc_file=None, goal_file=None, seed=1337):
         # Action enumeration
         self.actions = GoalGridWorldEnv.Actions
@@ -64,7 +66,8 @@ class GoalGridWorldEnv(gym.GoalEnv):
                 print("Cannot find path: {}".format(rel_path))
         else:
             # Generate an empty grid
-            self.grid = np.zeros((self.grid_size_0, self.grid_size_1), dtype=np.int)
+            self.grid = np.zeros(
+                (self.grid_size_0, self.grid_size_1), dtype=np.int)
 
             # Sample the agent
             self.goal_loc = self._sample_goal_loc()
@@ -89,7 +92,8 @@ class GoalGridWorldEnv(gym.GoalEnv):
         if agent_loc_file:
             # Load the goal_file, which is a 0/1 mask for where we can sample goals from
             curr_abs_path = os.path.dirname(os.path.abspath(__file__))
-            rel_path = os.path.join(curr_abs_path, "grid_samples", agent_loc_file)
+            rel_path = os.path.join(
+                curr_abs_path, "grid_samples", agent_loc_file)
             if os.path.exists(rel_path):
                 agent_loc_file = rel_path
                 self.agent_mask = np.loadtxt(goal_file, delimiter=',')
@@ -105,7 +109,7 @@ class GoalGridWorldEnv(gym.GoalEnv):
         if self.random_init_loc:
             self.agent_pos = self._sample_agent_loc()
         else:
-            self.agent_pos = [0,0]
+            self.agent_pos = [0, 0]
 
         # Observations are dictionaries containing an
         # grid observation, achieved and desired goals
@@ -123,9 +127,8 @@ class GoalGridWorldEnv(gym.GoalEnv):
 
         self.num_step = 0
 
-
-
     # Env methods
+
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
@@ -136,7 +139,7 @@ class GoalGridWorldEnv(gym.GoalEnv):
         if self.random_init_loc:
             self.agent_pos = self._sample_goal_loc()
         else:
-            self.agent_pos = [0,0]
+            self.agent_pos = [0, 0]
         self.goal_loc = self._sample_goal_loc()
         self.goal = np.copy(self.grid)
         self.goal[self.goal_loc[0], self.goal_loc[1]] = self.objects.agent
@@ -155,7 +158,8 @@ class GoalGridWorldEnv(gym.GoalEnv):
         self._take_action(action)
         obs = self._get_obs()
         info = {}
-        reward = self.compute_reward(obs['achieved_goal'], obs['desired_goal'], info)
+        reward = self.compute_reward(
+            obs['achieved_goal'], obs['desired_goal'], info)
 
         self.num_step += 1
 
@@ -181,7 +185,7 @@ class GoalGridWorldEnv(gym.GoalEnv):
             self.agent_pos = new_agent_pos
 
         # Set end of game if agent goes into lava
-        if self.grid[self.agent_pos[0],self.agent_pos[1]] == self.objects.lava:
+        if self.grid[self.agent_pos[0], self.agent_pos[1]] == self.objects.lava:
             self.end_of_game = True
 
         return
@@ -198,7 +202,7 @@ class GoalGridWorldEnv(gym.GoalEnv):
 
         # Check if the new location is out of boundary
         if new_agent_pos[0] < 0 or new_agent_pos[1] < 0 \
-            or new_agent_pos[0] > (self.grid_size_0 - 1) or new_agent_pos[1] > (self.grid_size_1 - 1):
+                or new_agent_pos[0] > (self.grid_size_0 - 1) or new_agent_pos[1] > (self.grid_size_1 - 1):
             return self.agent_pos
         else:
             return new_agent_pos
@@ -232,7 +236,7 @@ class GoalGridWorldEnv(gym.GoalEnv):
         state = np.copy(grid)
 
         # Set the agent's position on the grid
-        state[self.agent_pos[0],self.agent_pos[1]] = self.objects.agent
+        state[self.agent_pos[0], self.agent_pos[1]] = self.objects.agent
 
         if use_one_hot:
             state = self.one_hot(state, len(self.objects))
@@ -253,18 +257,21 @@ class GoalGridWorldEnv(gym.GoalEnv):
         or is valid according to the goal_file
         :return:
         """
-        coord_1 = random.randint(0, self.grid_size_0 - 1) # TODO: Make it dependent on the seed
+        coord_1 = random.randint(
+            0, self.grid_size_0 - 1)  # TODO: Make it dependent on the seed
         coord_2 = random.randint(0, self.grid_size_1 - 1)
 
         if self.goal_mask is not None:
             # Make sure that the sampled goal is a valid goal according to the mask
             while self.goal_mask[coord_1, coord_2] != 1:
-                coord_1 = random.randint(0, self.grid_size_0 - 1)  # TODO: Make it dependent on the seed
+                # TODO: Make it dependent on the seed
+                coord_1 = random.randint(0, self.grid_size_0 - 1)
                 coord_2 = random.randint(0, self.grid_size_1 - 1)
         else:
             # Make sure that the sampled goal position is empty
-            while self.grid[coord_1,coord_2] != self.objects.empty:
-                coord_1 = random.randint(0, self.grid_size_0 - 1)  # TODO: Make it dependent on the seed
+            while self.grid[coord_1, coord_2] != self.objects.empty:
+                # TODO: Make it dependent on the seed
+                coord_1 = random.randint(0, self.grid_size_0 - 1)
                 coord_2 = random.randint(0, self.grid_size_1 - 1)
 
         return coord_1, coord_2
@@ -275,18 +282,21 @@ class GoalGridWorldEnv(gym.GoalEnv):
         or is valid according to the agent_loc_file
         :return:
         """
-        coord_1 = random.randint(0, self.grid_size_0 - 1) # TODO: Make it dependent on the seed
+        coord_1 = random.randint(
+            0, self.grid_size_0 - 1)  # TODO: Make it dependent on the seed
         coord_2 = random.randint(0, self.grid_size_1 - 1)
 
         if self.agent_mask is not None:
             # Make sure that the sampled goal is a valid goal according to the mask
             while self.agent_mask[coord_1, coord_2] != 1:
-                coord_1 = random.randint(0, self.grid_size_0 - 1)  # TODO: Make it dependent on the seed
+                # TODO: Make it dependent on the seed
+                coord_1 = random.randint(0, self.grid_size_0 - 1)
                 coord_2 = random.randint(0, self.grid_size_1 - 1)
         else:
             # Make sure that the sampled goal position is empty
-            while self.grid[coord_1,coord_2] != self.objects.empty:
-                coord_1 = random.randint(0, self.grid_size_0 - 1)  # TODO: Make it dependent on the seed
+            while self.grid[coord_1, coord_2] != self.objects.empty:
+                # TODO: Make it dependent on the seed
+                coord_1 = random.randint(0, self.grid_size_0 - 1)
                 coord_2 = random.randint(0, self.grid_size_1 - 1)
 
         return coord_1, coord_2
@@ -303,7 +313,8 @@ class GoalGridWorldEnv(gym.GoalEnv):
             ax.set_title(titles[i-1])
             plt.imshow(imgs[i-1])
 
-        plt.figtext(0.5, 0.1, 'Time step: {}'.format(self.num_step), horizontalalignment='center')
+        plt.figtext(0.5, 0.1, 'Time step: {}'.format(
+            self.num_step), horizontalalignment='center')
 
         plt.pause(0.01)
         plt.clim(0, 10)
@@ -336,4 +347,3 @@ class GoalGridWorldEnv(gym.GoalEnv):
         oh = np.eye(size)[flattened.astype(int)]
         oh = oh.reshape(self.grid_size_0, self.grid_size_1, size)
         return oh
-

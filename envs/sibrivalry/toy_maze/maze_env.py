@@ -22,7 +22,8 @@ class Env:
             _, size, seed = self.maze_type.split('_')
             size = int(size)
             seed = int(seed)
-            self._mazes[self.maze_type] = {'maze': make_crazy_maze(size, seed), 'action_range': 0.95}
+            self._mazes[self.maze_type] = {
+                'maze': make_crazy_maze(size, seed), 'action_range': 0.95}
 
         # Generate an "experiment" maze specified by its height, half-width, and size of starting section
         if self.maze_type.startswith('experiment'):
@@ -30,23 +31,26 @@ class Env:
             h = int(h)
             half_w = int(half_w)
             sz0 = int(sz0)
-            self._mazes[self.maze_type] = {'maze': make_experiment_maze(h, half_w, sz0), 'action_range': 0.25}
-
+            self._mazes[self.maze_type] = {'maze': make_experiment_maze(
+                h, half_w, sz0), 'action_range': 0.25}
 
         if self.maze_type.startswith('corridor'):
             corridor_length = int(self.maze_type.split('_')[1])
-            self._mazes[self.maze_type] = {'maze': make_hallway_maze(corridor_length), 'action_range': 0.95}
+            self._mazes[self.maze_type] = {'maze': make_hallway_maze(
+                corridor_length), 'action_range': 0.95}
 
         if self.maze_type.startswith('umaze'):
             corridor_length = int(self.maze_type.split('_')[1])
-            self._mazes[self.maze_type] = {'maze': make_u_maze(corridor_length), 'action_range': 0.95}
+            self._mazes[self.maze_type] = {'maze': make_u_maze(
+                corridor_length), 'action_range': 0.95}
 
         assert self.maze_type in self._mazes
 
         self.use_antigoal = bool(use_antigoal)
         self.ddiff = bool(ddiff)
 
-        self._state = dict(s0=None, prev_state=None, state=None, goal=None, n=None, done=None, d_goal_0=None, d_antigoal_0=None)
+        self._state = dict(s0=None, prev_state=None, state=None, goal=None,
+                           n=None, done=None, d_goal_0=None, d_antigoal_0=None)
 
         self.dist_threshold = 0.15
 
@@ -112,7 +116,8 @@ class Env:
         else:
             r_dense_prev = -self.dist(self.goal, self._state['prev_state'])
             if self.use_antigoal:
-                r_dense_prev += self.dist(self.antigoal, self._state['prev_state'])
+                r_dense_prev += self.dist(self.antigoal,
+                                          self._state['prev_state'])
             r_dense -= r_dense_prev
             return r_sparse + r_dense
 
@@ -152,7 +157,8 @@ class Env:
             s_xy = self.to_tensor(state)
         if goal is None:
             if 'square' in self.maze_type:
-                g_xy = self.to_tensor(self.maze.sample_goal(min_wall_dist=0.025 + self.dist_threshold))
+                g_xy = self.to_tensor(self.maze.sample_goal(
+                    min_wall_dist=0.025 + self.dist_threshold))
             else:
                 g_xy = self.to_tensor(self.maze.sample_goal())
         else:

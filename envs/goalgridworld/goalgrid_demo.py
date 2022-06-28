@@ -5,7 +5,8 @@ from goal_grid import GoalGridWorldEnv
 # grid_file = 'room_5x5_empty.txt'
 grid_file = 'kontrived_room.txt'
 random_init_loc = False
-env = GoalGridWorldEnv(grid_size=5, max_step=25,grid_file=grid_file,random_init_loc=random_init_loc)
+env = GoalGridWorldEnv(grid_size=5, max_step=25,
+                       grid_file=grid_file, random_init_loc=random_init_loc)
 obs = env.reset()
 env.render()
 # Act randomly
@@ -20,5 +21,3 @@ while(num_eps < 10):
         obs = env.reset()
         env.render()
         num_eps += 1
-
-

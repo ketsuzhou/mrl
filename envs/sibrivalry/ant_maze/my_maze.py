@@ -8,7 +8,6 @@ import numpy as np
 from envs.sibrivalry.ant_maze.create_maze_env import create_maze_env
 
 
-
 class Env:
     def __init__(self, n=None, maze_type=None, hardmode=False):
         self.n = n
