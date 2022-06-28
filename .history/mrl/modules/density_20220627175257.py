@@ -381,3 +381,7 @@ class FlowDensity(mrl.Module):
             self.flow_model = torch.load(path)
 
 
+"""
+class DisagreementDensity(mrl.Module):
+  #TODO
+"""

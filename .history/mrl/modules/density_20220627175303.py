@@ -44,8 +44,7 @@ class RawKernelDensity(mrl.Module):
         assert isinstance(getattr(self, self.buffer_name), OnlineHERBuffer)
 
     def _optimize(self, force=False):
-        buffer = getattr(
-            self, self.buffer_name).buffer.BUFF['buffer_' + self.item]
+        buffer = getattr(self, self.buffer_name).buffer.BUFF['buffer_' + self.item]
         self.step += 1
 
         if force or (self.step % self.optimize_every == 0 and len(buffer)):
@@ -381,3 +380,7 @@ class FlowDensity(mrl.Module):
             self.flow_model = torch.load(path)
 
 
+"""
+class DisagreementDensity(mrl.Module):
+  #TODO
+"""
